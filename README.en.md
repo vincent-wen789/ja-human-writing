@@ -34,7 +34,7 @@ The difference isn't vocabulary. The first one has no date, no amount, and nobod
 
 - The measurable parts (sentence-length variance, banned phrases, translationese) go to [coji/natural-japanese](https://github.com/coji/natural-japanese)'s lint
 - The banned-vocabulary lists were imported and reorganized from [stop-ai-slop-jp](https://github.com/iKora128/stop-ai-slop-jp) and [slop-nuki](https://github.com/chezou/slop-nuki). **They overlap** — see "Relationship to existing skills"
-- **What's actually original here is three things**: a material gate before drafting, explicit speaker positioning, and a loop that judges each machine finding one at a time instead of auto-applying them
+- **The core of this skill is three things**: a material gate before drafting, explicit speaker positioning, and a loop that judges each machine finding one at a time instead of auto-applying them. The first two are ported from the Chinese-language [human-writing](https://github.com/KKKKhazix/human-writing); what's new here is the Japanese adaptation and the third part
 
 ## Three parts
 
@@ -73,9 +73,10 @@ The thesis's most useful contribution wasn't a number, it was a frame. Split "AI
 
 **Prerequisites**: a working [Claude Code](https://claude.com/claude-code) install. You use the terminal exactly once. No extra cost — it runs inside your existing Claude usage.
 
-Open a terminal and paste these two lines in order.
+Open a terminal and paste these three lines in order.
 
 ```bash
+mkdir -p ~/.claude/skills
 git clone https://github.com/vincent-wen789/ja-human-writing.git
 cp -R ja-human-writing/ja-human-writing ~/.claude/skills/
 ```
@@ -92,6 +93,7 @@ No terminal after this.
 <details>
 <summary><b>What these commands actually do</b></summary>
 
+- `mkdir -p ~/.claude/skills` — makes the folder skills live in (does nothing if it already exists)
 - `git clone` — downloads a folder from GitHub into wherever you currently are
 - `cp -R ... ~/.claude/skills/` — copies that folder to where Claude Code looks for skills
 - **It only copies.** Nothing is deleted, no system settings change. Don't like it? Delete the folder and you're back where you started

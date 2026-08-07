@@ -69,9 +69,10 @@ AI臭を消す定番の直し方が、実測では逆に効く。下の節。
 
 **前提**:[Claude Code](https://claude.com/claude-code) が動く環境。ターミナルを一度だけ使う。追加の課金は不要(Claude の利用枠の中で動く)。
 
-ターミナルを開いて、この2行を上から順に貼る。
+ターミナルを開いて、この3行を上から順に貼る。
 
 ```bash
+mkdir -p ~/.claude/skills
 git clone https://github.com/vincent-wen789/ja-human-writing.git
 cp -R ja-human-writing/ja-human-writing ~/.claude/skills/
 ```
@@ -88,6 +89,7 @@ cp -R natural-japanese/skills/natural-japanese ~/.claude/skills/
 <details>
 <summary><b>ターミナルを触ったことがない人へ</b>(この命令が何をするのか)</summary>
 
+- `mkdir -p ~/.claude/skills` —— スキルの置き場所を用意する(既にあれば何も起きない)
 - `git clone` —— GitHub に置いてあるフォルダを、いまいる場所にダウンロードする
 - `cp -R ... ~/.claude/skills/` —— そのフォルダを、Claude Code がスキルを探しにいく場所にコピーする
 - **やっているのはコピーだけ。** 何かを消したり、パソコンの設定を変えたりはしない。気に入らなければコピーしたフォルダを捨てれば元通り

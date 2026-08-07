@@ -73,9 +73,10 @@ v0.1.0 · 2026-08
 
 **前提**:装好 [Claude Code](https://claude.com/claude-code)。终端只用这一次。不额外花钱(跑在你现有的 Claude 额度里)。
 
-打开终端,把这两行按顺序粘进去。
+打开终端,把这三行按顺序粘进去。
 
 ```bash
+mkdir -p ~/.claude/skills
 git clone https://github.com/vincent-wen789/ja-human-writing.git
 cp -R ja-human-writing/ja-human-writing ~/.claude/skills/
 ```
@@ -92,6 +93,7 @@ cp -R natural-japanese/skills/natural-japanese ~/.claude/skills/
 <details>
 <summary><b>这两行到底在干什么</b></summary>
 
+- `mkdir -p ~/.claude/skills` —— 建好放 skill 的地方(已经有就什么都不做)
 - `git clone` —— 把 GitHub 上的一个文件夹下载到你当前所在的位置
 - `cp -R ... ~/.claude/skills/` —— 把那个文件夹复制到 Claude Code 找 skill 的地方
 - **它只是复制。** 不删东西,不改系统设置。不喜欢就把复制过去的文件夹删掉,一切照旧

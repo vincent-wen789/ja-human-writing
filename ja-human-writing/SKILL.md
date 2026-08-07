@@ -25,6 +25,7 @@ license: MIT
 1. **SNS 短文(140〜500字)** → 本文 + 下の短文プロファイル。lint は `--genre essay`
 2. **note・ブログ長文** → 本文 + 素材ゲート全量。lint は `--genre essay`
 3. **ビジネスメール・文書** → natural-japanese 主導 + `references/forbidden-ja.md` §6 の敬語表。lint は `--genre business`。敬語の「残すもの」表が削除より優先。この場合、§3 の一人称ルールは「主体を明示する」(弊社/当方/担当の○○)に読み替える
+4. **技術記事・技術文書** → 本文 + `references/forbidden-ja.md`。lint は `--genre tech`。**素材ゲート(§1)は参考程度に落とす**——技術文の素材はコード・エラーメッセージ・バージョン・再現手順で、日付や発言とは形が違う。禁止表・文体・リズムの部分はそのまま効く
 
 **衝突の裁決順:レジスタ適合 > 密度 > 個別の禁止。** 個別ルールがレジスタの慣習とぶつかったらレジスタが勝つ。ビジネスの敬語、業界の口語、スレッドの転換句は slop ではない。
 
@@ -115,7 +116,7 @@ license: MIT
      [ -f "$d/scripts/lint.py" ] && LINT="$d/scripts/lint.py" && break
    done
    if [ -n "$LINT" ] && command -v uv >/dev/null 2>&1; then
-     uv run "$LINT" --json <file> --genre essay > r1.json
+     uv run "$LINT" --json <file> --genre <essay|tech|business> > r1.json   # §0 で判定した文書タイプに合わせる
      # 改稿後: --baseline r1.json を付けて再実行し、出力は別ファイルへ
    fi
    ```
