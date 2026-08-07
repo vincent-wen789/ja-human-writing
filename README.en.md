@@ -73,13 +73,31 @@ The thesis's most useful contribution wasn't a number, it was a frame. Split "AI
 
 **Prerequisites**: a working [Claude Code](https://claude.com/claude-code) install. You use the terminal exactly once. No extra cost — it runs inside your existing Claude usage.
 
-Everything at once (skill + machine checker):
+Open a terminal and paste these two lines in order.
 
 ```bash
-git clone https://github.com/vincent-wen789/ja-human-writing.git && cp -R ja-human-writing/ja-human-writing ~/.claude/skills/ && git clone https://github.com/coji/natural-japanese.git && cp -R natural-japanese/skills/natural-japanese ~/.claude/skills/
+git clone https://github.com/vincent-wen789/ja-human-writing.git
+cp -R ja-human-writing/ja-human-writing ~/.claude/skills/
 ```
 
-One paste and you're done. No terminal after this.
+For the machine checker too (optional, recommended), two more:
+
+```bash
+git clone https://github.com/coji/natural-japanese.git
+cp -R natural-japanese/skills/natural-japanese ~/.claude/skills/
+```
+
+No terminal after this.
+
+<details>
+<summary><b>What these commands actually do</b></summary>
+
+- `git clone` — downloads a folder from GitHub into wherever you currently are
+- `cp -R ... ~/.claude/skills/` — copies that folder to where Claude Code looks for skills
+- **It only copies.** Nothing is deleted, no system settings change. Don't like it? Delete the folder and you're back where you started
+- **No admin rights needed** — it all happens inside your home folder, so it usually works on a locked-down work machine
+- **"Claude Code" is not the browser or desktop Claude app.** It's the terminal one, and you need it installed first. It's covered by your Claude plan; **this skill itself is free**
+</details>
 
 - **The machine checker is optional.** Skip natural-japanese and that step degrades to a manual checklist; the skill still works
 - If you do use it, you need [uv](https://docs.astral.sh/uv/). It installs the Python dependencies itself — no manual pip step
@@ -123,15 +141,19 @@ The difference is two things: the layer *before* writing (material gate, speaker
 
 If you install all three: natural-japanese is only called as a linter, so no conflict. stop-ai-slop-jp and this skill will **load overlapping vocabulary lists** — not contradictory, but it costs context. **One of the two is enough.** If you already run stop-ai-slop-jp and don't care about the pre-writing layer, there isn't much reason to switch.
 
+**Measured context cost**: only the description (a few dozen tokens) is always resident. When the skill fires, `SKILL.md` is roughly **10k tokens**; `references/` load only when needed (ban list ~7.7k, evidence layer ~3.9k). If you're running ten-plus skills, judge from those numbers.
+
 ## Limits
 
 - **The empirical base compares essays and compositions. Short-form social posts are not in it.** At 140–500 characters the length statistics go quiet from insufficient sample
   - **What still works on short text**: set phrases (「いかがでしたか」 etc.), translationese, subject substitution, symbol residue, presence or absence of material — none of these depend on length
   - **What doesn't**: length variance, paragraph structure, noun-ending ratios. The skill explicitly marks these "not applicable" and silences them
   - **Don't read that silence as a clean bill of health.** That part you check yourself
+- **Built around essays, opinion pieces, and reported writing. Technical articles aren't the center of the target.** The material gate asks for dates, amounts, quotes, and failures — that fits writing with experience or reporting in it. Technical explanation has a different shape of material (code, error messages, versions, repro steps). The ban lists and style rules still apply, so for technical writing run the lint with `--genre tech` and treat the material gate as advisory
 - One source is an undergraduate thesis (20 samples). As above, only its direction is used, not its numbers
 - **Validated on exactly one worked example** (`examples/`). That shows the procedure reproduces; it does not demonstrate effectiveness
 - Version 0.1.0. Tracking upstream changes (natural-japanese, stop-ai-slop-jp) is manual for now. Issues welcome
+- Written by a marketer living in Japan ([@vinentW789](https://x.com/vinentW789)), not an engineer. It came out of needing to ship Japanese writing, and it gets fixed as long as I keep using it. No company behind it
 
 ## Layout
 

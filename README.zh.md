@@ -73,18 +73,36 @@ v0.1.0 · 2026-08
 
 **前提**:装好 [Claude Code](https://claude.com/claude-code)。终端只用这一次。不额外花钱(跑在你现有的 Claude 额度里)。
 
-一次装全(skill 本体 + 机检):
+打开终端,把这两行按顺序粘进去。
 
 ```bash
-git clone https://github.com/vincent-wen789/ja-human-writing.git && cp -R ja-human-writing/ja-human-writing ~/.claude/skills/ && git clone https://github.com/coji/natural-japanese.git && cp -R natural-japanese/skills/natural-japanese ~/.claude/skills/
+git clone https://github.com/vincent-wen789/ja-human-writing.git
+cp -R ja-human-writing/ja-human-writing ~/.claude/skills/
 ```
 
-粘一次就完事,之后不用再碰终端。
+要装机检的话(可选、推荐),再来两行:
+
+```bash
+git clone https://github.com/coji/natural-japanese.git
+cp -R natural-japanese/skills/natural-japanese ~/.claude/skills/
+```
+
+之后不用再碰终端。
+
+<details>
+<summary><b>这两行到底在干什么</b></summary>
+
+- `git clone` —— 把 GitHub 上的一个文件夹下载到你当前所在的位置
+- `cp -R ... ~/.claude/skills/` —— 把那个文件夹复制到 Claude Code 找 skill 的地方
+- **它只是复制。** 不删东西,不改系统设置。不喜欢就把复制过去的文件夹删掉,一切照旧
+- **不需要管理员权限**(全在你自己的用户目录里完成,公司发的电脑通常也能跑)
+- **「Claude Code」不是浏览器或桌面 app 里的 Claude**,是跑在终端里的那个,要先装好。费用包含在你的 Claude 订阅里,**这个 skill 本身免费**
+</details>
 
 - **机检是可选的。** 不装 natural-japanese,那一步降级成人工清单,skill 照样跑
 - 要用机检的话需要 [uv](https://docs.astral.sh/uv/),Python 依赖它自己会装,不用手动 pip
-- **Windows**:`cp -R` 换成 PowerShell 的 `Copy-Item -Recurse`
 - **skill 指令本身是日文写的**(规则讲的就是日语特有现象),但你用什么语言跟 Claude 说话都不影响
+- **Windows**:`cp -R` 换成 PowerShell 的 `Copy-Item -Recurse`
 
 ## 怎么用
 
@@ -122,15 +140,19 @@ Claude:  机检报了 7 条,我改其中 3 条。
 
 三个都装的话:natural-japanese 只是被当 lint 调用,不冲突;stop-ai-slop-jp 和本 skill 会**重复加载相近的禁用词表**(不矛盾,但吃 context)。**二选一就够。** 如果你已经用熟了 stop-ai-slop-jp、又不在乎动笔前那层,换过来的理由不强。
 
+**context 成本实测**:常驻的只有 description 那几十 token。skill 触发时 `SKILL.md` 本体约 **1 万 token**,`references/` 按需加载(禁令表约 7.7k / 实证层约 3.9k)。装了十几个 skill 的话,按这个数字判断。
+
 ## 边界
 
 - **实证基础是意见文和作文的对比,SNS 短文不在里面。** 140–500 字时句长统计会因样本不足而沉默
   - **短文里仍然有效的**:定型句(「いかがでしたか」等)、翻译腔、主语偷换、记号残骸、有没有材料——这些不吃字数
   - **短文里失效的**:句长离散度、段落结构、体言止め占比。skill 会把这些明确标成「不适用」并闭嘴
   - **别把这个沉默读成「没有 AI 味」。** 这部分得自己看
+- **底子是意见文、随笔、采访类稿子,技术文章不是靶心。** 材料闸要的「日期、金额、原话、失败过的事」适合带体验或采访的文章;技术解说的材料形态不一样(代码、报错、版本、复现步骤)。禁令表和文体部分照样有效,所以写技术文的话,lint 用 `--genre tech` 跑,材料闸当参考看
 - 一个出处是本科卒论(20 篇样本)。如上,只用方向不用数字
 - **只验证过 1 个案例**(`examples/`)。那说明流程可复现,不等于效果被证明
 - 版本 0.1.0。上游(natural-japanese、stop-ai-slop-jp)更新后的跟进目前是手动的。发现问题欢迎开 Issue
+- 作者是住在日本的 marketer([@vinentW789](https://x.com/vinentW789)),不是工程师。这东西出自「自己要写日文发出去」的需求,只要我还在用就会继续修。背后没有公司
 
 ## 结构
 
