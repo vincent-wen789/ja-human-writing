@@ -1,0 +1,15 @@
+Third-party notices
+
+Portions of the reference word lists are derived from:
+
+- stop-ai-slop-jp, Copyright (c) Daichi Nagashima (MIT License)
+  https://github.com/iKora128/stop-ai-slop-jp
+- slop-nuki, Copyright (c) Aki Ariga (MIT License)
+  https://github.com/chezou/slop-nuki
+- natural-japanese, Copyright (c) coji (MIT License)
+  https://github.com/coji/natural-japanese
+- human-writing, Copyright (c) KKKKhazix (MIT License)
+  https://github.com/KKKKhazix/human-writing
+
+Each of the above is used under the MIT License. The original copyright
+notices and permission notices are included with those projects.
