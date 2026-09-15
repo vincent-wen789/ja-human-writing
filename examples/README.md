@@ -1,27 +1,23 @@
-# 検証用サンプル
+# 旧版の作例と lint 記録
 
-このスキルの効き目を自分の手で再現するためのファイル。
+このフォルダは v0.1.0 時点の before/after を保管している。現在の推奨編集手順や、効果を証明する比較実験ではない。
 
-| ファイル | 中身 | lint 結果 |
+| ファイル | 内容 | 当時記録した lint 結果 |
 |---|---|---|
-| `before.md` | わざと AI 臭く書いた1000字の記事(取引所のセキュリティ事件を解説する体) | **8件**(禁止語6・`low_burstiness` 1・`low_specificity` 1) |
-| `after.md` | 同じ題材を、このスキルの規律に沿って書き直したもの | **0件** |
+| `before.md` | 意図的に定型表現を入れた記事 | 8件 |
+| `after.md` | 同じ題材を旧版の規律で書き直した記事 | 0件 |
 
-## 再現手順
+当時は `low_burstiness` を消すため、極端に短い文と長い文を混ぜた。v0.1.1 ではこの方法を推奨しない。指摘が減っても、自然さ、事実の保全、作者の声が改善した証拠にはならない。
+
+また、この組は素材を追加する書き直しを含み、原文の情報だけを保つ軽い改稿の例ではない。軽い改稿の境界は [SKILL.md](../ja-human-writing/SKILL.md) を参照。
+
+## 現在の環境で実行する
+
+natural-japanese と uv を導入済みの場合、リポジトリのルートで実行する。インストール先が異なる場合はパスを変更する。
 
 ```bash
 uv run ~/.claude/skills/natural-japanese/scripts/lint.py examples/before.md --genre essay
-uv run ~/.claude/skills/natural-japanese/scripts/lint.py examples/after.md  --genre essay
+uv run ~/.claude/skills/natural-japanese/scripts/lint.py examples/after.md --genre essay
 ```
 
-## 途中で何が起きたか
-
-書き直し1周目は **1件** 残った。`low_burstiness` ——文の長短のメリハリ不足。
-
-禁止語は全部消して、一人称で書いて、判断も入れて、それでもリズムだけ機械のままだった。極端に短い文(「気づいたのは26時間後。」)と、長い一文を混ぜて2周目でゼロになった。
-
-**表面の語彙より、リズムの方が後まで残る。** これが `references/evidence-ja.md` に書いた「二層」の、手元での再現。
-
-## 注意
-
-サンプルは1件。効果の証明ではなく、**手順が再現できることの確認用**。統計的な主張をするには全く足りない。
+件数はlintの版や設定によって変わる。再実行で確認できるのは、その実装の検出結果まで。独立した読者による盲検比較は行っていない。

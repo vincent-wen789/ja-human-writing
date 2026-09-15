@@ -2,72 +2,50 @@
 
 # ja-human-writing
 
-A Claude Code skill for writing Japanese that reads like a person wrote it.
+A Claude Code skill for drafting and editing Japanese while preserving the writer's judgment and voice.
 
-v0.1.0 · 2026-08
+v0.1.1 · 2026-09
 
-## The kind of text it fixes
+## Keep what already works
 
-```
-近年、デジタル資産の世界は急速な発展を遂げています。しかし、その一方で、
-セキュリティに関する課題も浮き彫りになってきていると言えるでしょう。
-```
+Light editing preserves facts and the strength of claims. For example, this illustrative draft repeats itself:
 
-*"In recent years, the world of digital assets has seen rapid development. At the same time, it could be said that security challenges have come into relief."*
-
-## The kind it aims for
-
-```
-7月7日、Gate のあるユーザーの口座から170万ドルが41分で抜かれた。
-気づいたのは26時間後。
+```text
+今回の変更で、検索時間が短くなる可能性があります。
+つまり、検索にかかる時間が短くなる可能性があるということです。
 ```
 
-*"On July 7, $1.7M was drained from a Gate user's account in 41 minutes. They noticed 26 hours later."*
+The second sentence can go:
 
-The difference isn't vocabulary. The first one has no date, no amount, and nobody doing anything — the grammatical subject of "challenges came into relief" is *challenges*. You can tell the writer never actually looked at the thing.
+```text
+今回の変更で、検索時間が短くなる可能性があります。
+```
 
-**Deleting banned phrases won't turn the first into the second.** What's missing is material, and a person standing somewhere. That's the gap this skill fills.
+The qualification “may reduce search time” stays. The skill should neither turn it into a guarantee nor invent measured timings. It should not change sentence lengths just to create variation.
 
-## What this is, and what it isn't
+## Drafting and editing have different boundaries
 
-**This is not an NLP tool. It's a prompt and workflow layer.** It ships no detection engine of its own.
+- **Drafting:** establish the sources and the writer's judgment. For longer pieces, five concrete materials are a planning reminder, not a quota. One substantial experience or case may be enough.
+- **Editing:** preserve structure, facts, quotes, negation, conditions, and certainty. Keep sound sentences and the author's habits. Restructure only when requested.
+- **Reviewing findings:** optional [natural-japanese](https://github.com/coji/natural-japanese) lint supplies candidates. Make a change only when there is a concrete reading problem.
 
-- The measurable parts (sentence-length variance, banned phrases, translationese) go to [coji/natural-japanese](https://github.com/coji/natural-japanese)'s lint
-- The banned-vocabulary lists were imported and reorganized from [stop-ai-slop-jp](https://github.com/iKora128/stop-ai-slop-jp) and [slop-nuki](https://github.com/chezou/slop-nuki). **They overlap** — see "Relationship to existing skills"
-- **The core of this skill is three things**: a material gate before drafting, explicit speaker positioning, and a loop that judges each machine finding one at a time instead of auto-applying them. The first two are ported from the Chinese-language [human-writing](https://github.com/KKKKhazix/human-writing); what's new here is the Japanese adaptation and the third part
+This repository contains instructions, not its own AI-detection engine. Its vocabulary and structure references draw on [stop-ai-slop-jp](https://github.com/iKora128/stop-ai-slop-jp) and [slop-nuki](https://github.com/chezou/slop-nuki), among others. Matches are not automatic deletion rules.
 
-## Three parts
+## Changes in v0.1.1
 
-**1. A gate before you write**
+- No mandatory extreme sentence lengths, first-person pronouns, or noun-ending ratios.
+- No deletion quotas for three-part lists, uncertainty markers, or genuine “A, not B” corrections.
+- No invented agents or personal experiences when clarifying a subject, and no automatic hearsay added to verified facts.
+- Punctuation, invitations, navigation, quotes, and valid Markdown are judged in context.
+- Lint output goes into a dedicated temporary directory. Existing drafts and JSON files are preserved.
 
-Non-fiction over ~1200 Japanese characters (roughly 500–700 English words) needs five concrete, sourced pieces of material before drafting starts. Dates, amounts, proper nouns, things people actually said, things that failed. If five don't exist, go research or write something honestly shorter — a long piece with no material stays padding no matter how much you revise it.
+## What the evidence supports
 
-**2. Three "wrong direction" warnings**
+Onishi Yume's undergraduate thesis compares 20 human and 20 AI texts of roughly 500 Japanese characters in its main study. Its observations do not establish editing rules for every social post or current model. The previous skill also confused sentence-length **standard deviation** with the length of individual sentences.
 
-The standard fixes for AI-sounding Japanese work backwards. See below.
+Zaitsu & Jin (2023) studied authorship classification in Japanese. It did not test whether deleting phrases or changing sentence lengths improves writing.
 
-**3. Detection and judgment are separate jobs**
-
-The machine raises suspicions; **Claude then decides "fix or keep" on each one, using the skill's rules.** You are not asked to judge Japanese naturalness yourself — you approve the result, but finding the problems is the machine's and Claude's job, not yours. That matters if you're working in a language you're still learning.
-
-## The three fixes that run backwards
-
-| Common advice | What the data shows | Right direction |
-|---|---|---|
-| Replace repeated words with synonyms | Lexical diversity (TTR — distinct words ÷ total words) is **higher in AI**. Humans are the ones who repeat | Don't substitute. Let repetition stand |
-| Add metaphors, it reads too flat | AI uses **several times more metaphor** than humans. 「まるで〜のよう」("just like…") is an AI tell | Don't add. Delete template metaphors |
-| Too many connectives, cut them | In formal registers **usage is nearly identical**. The real difference is *variety* — AI leans on the same three | Keep the count, vary the type |
-
-### How strong is the evidence (stated plainly)
-
-These three rest on **two sources of unequal strength**.
-
-- **Peer-reviewed**: Zaitsu &amp; Jin 2023, *PLoS One* 18(8), [PMID 37556434](https://pubmed.ncbi.nlm.nih.gov/37556434/) — discriminates Japanese AI-generated text using function-word rates and related features. Anyone can pull it up right now
-- **An undergraduate thesis**: Onishi Yume, *A Study of "Natural Japanese" as Seen Through AI-Generated Text* (Hiroshima University, Faculty of Letters, 2026) — 20 AI vs 20 human texts. **A 20-sample undergraduate thesis, not easily verifiable from outside**
-
-The *direction* in the table above ("higher in AI", "more metaphor") comes from the thesis. **The specific numbers are not used as thresholds, so they aren't quoted here** — the skill itself only acts on direction. The figures are in `references/evidence-ja.md` with attribution, but read them with the caveat attached: directional, not universal thresholds.
-
-The thesis's most useful contribution wasn't a number, it was a frame. Split "AI-ness" into two layers: features readers can point at (specific vocabulary, comma placement), and features they can't name but still sense (sentence-length variance, density of hedging). **Almost all the measured difference lived in the second layer.**
+See [evidence and limits](ja-human-writing/references/evidence-ja.md) for primary sources, the inspected lint implementation, and withdrawn inferences. Synonyms, metaphors, and connectives are judged by meaning and readability, not adjusted to imitate a statistical distribution.
 
 ## Install
 
@@ -108,63 +86,44 @@ No terminal after this.
 
 ## Using it
 
-Just ask Claude Code:
+Ask Claude Code:
 
-```
-You:     Strip the AI smell out of this draft
-
-Claude:  Machine check found 7 issues. I'll fix 3.
-
-         L3  「〜と言えるでしょう」 → changed to a direct statement
-         L9  every paragraph is the same length → split one into two
-         L21 this paragraph has no proper nouns and no numbers.
-             Is there an actual shop name or date that goes here?
-
-         Leaving the other 4. The repeated 「〜と思う」 is doing
-         real work as your speaking voice, so it stays.
+```text
+Lightly edit this Japanese draft. Preserve the facts and tone; change only empty padding, repetition, or wording that actually gets in the reader's way.
 ```
 
-Other ways people use it:
+Ask for change explanations if you want them. For a new piece, provide material and ask for a draft. Missing facts can be researched within the task; personal experience must come from the writer.
 
-- **"Write a note post about X"** (note.com, the Japanese blogging platform) — the material gate runs first, and if material is thin you get questions back before any draft. Questions come in one batch, three maximum
-- **"Check the keigo in this email"** — double honorifics, 「させていただく」 overuse, stacked cushion phrases
+Business and technical documents keep their normal register and information structure. They do not need forced personal narration or sentence-length variation.
 
-## Teaching it your voice (optional)
+## Your voice
 
-"If it enforces rules, won't it sand off my own habits?" That's handled by design.
+Provide one to three pieces you like as references for vocabulary, judgment, and register. Repeated terms and useful metaphors can be part of your voice. The skill should preserve them rather than normalize your writing to a supposed human distribution.
 
-Give it one to three pieces of your own writing you're happy with, and it uses your sentence rhythm, how you land judgments, and how tight you keep the polite register as a baseline. **Habits that recur across multiple pieces are protected even if they appear on a ban list.** Human style varies within one piece and stays consistent across many; AI does the exact opposite (uniform inside one piece, no identity across several). So those recurring habits are the thing worth defending.
+## Relationship to other skills
 
-## Relationship to existing skills
+The material check and speaker positioning adapt [human-writing](https://github.com/KKKKhazix/human-writing). Vocabulary overlaps with stop-ai-slop-jp and slop-nuki. When combining rules, this skill prioritizes information preservation and author voice over individual pattern matches.
 
-**The banned-vocabulary lists were imported and reorganized from stop-ai-slop-jp and slop-nuki. That content overlaps.** Stating it plainly rather than burying it in credits.
+natural-japanese is an optional linter; manual checks are available without it. Reference files load only when relevant. Context cost depends on the model and files loaded; the old token estimates have been removed.
 
-The difference is two things: the layer *before* writing (material gate, speaker positioning), and *which way to steer* when fixing — get the three reversals above wrong and you'll "clean up" your text in the AI direction.
+## Limits and validation
 
-If you install all three: natural-japanese is only called as a linter, so no conflict. stop-ai-slop-jp and this skill will **load overlapping vocabulary lists** — not contradictory, but it costs context. **One of the two is enough.** If you already run stop-ai-slop-jp and don't care about the pre-writing layer, there isn't much reason to switch.
+- Intended mainly for opinion pieces, personal writing, and social posts. Register matters.
+- Short texts often fall below statistical thresholds. A finding, or its absence, does not establish naturalness or authorship.
+- [examples/](examples/) preserves a historical worked example and lint counts. It is neither proof of effectiveness nor the current recommended editing procedure.
+- This revision addresses rule consistency and preservation boundaries. No independent reader blind test has established that it improves overall writing quality.
+- Upstream changes are tracked manually. Reports of mistakes and false positives are welcome.
 
-**Measured context cost**: only the description (a few dozen tokens) is always resident. When the skill fires, `SKILL.md` is roughly **10k tokens**; `references/` load only when needed (ban list ~7.7k, evidence layer ~3.9k). If you're running ten-plus skills, judge from those numbers.
-
-## Limits
-
-- **The empirical base compares essays and compositions. Short-form social posts are not in it.** At 140–500 characters the length statistics go quiet from insufficient sample
-  - **What still works on short text**: set phrases (「いかがでしたか」 etc.), translationese, subject substitution, symbol residue, presence or absence of material — none of these depend on length
-  - **What doesn't**: length variance, paragraph structure, noun-ending ratios. The skill explicitly marks these "not applicable" and silences them
-  - **Don't read that silence as a clean bill of health.** That part you check yourself
-- **Built around essays, opinion pieces, and reported writing. Technical articles aren't the center of the target.** The material gate asks for dates, amounts, quotes, and failures — that fits writing with experience or reporting in it. Technical explanation has a different shape of material (code, error messages, versions, repro steps). The ban lists and style rules still apply, so for technical writing run the lint with `--genre tech` and treat the material gate as advisory
-- One source is an undergraduate thesis (20 samples). As above, only its direction is used, not its numbers
-- **Validated on exactly one worked example** (`examples/`). That shows the procedure reproduces; it does not demonstrate effectiveness
-- Version 0.1.0. Tracking upstream changes (natural-japanese, stop-ai-slop-jp) is manual for now. Issues welcome
-- Written by a marketer living in Japan ([@vinentW789](https://x.com/vinentW789)), not an engineer. It came out of needing to ship Japanese writing, and it gets fixed as long as I keep using it. No company behind it
+Written by a marketer living in Japan ([@vinentW789](https://x.com/vinentW789)), for the practical work of writing and publishing Japanese.
 
 ## Layout
 
 | File | Contents |
 |---|---|
-| `SKILL.md` | Main. Document-type routing → material gate → speaker positioning → 13 writing rules → pre-delivery ban table → inspection loop |
-| `references/forbidden-ja.md` | Ban patterns (set phrases / AI pet words / grandiose vocabulary / subject substitution / structure / keigo / kango register / symbols) |
-| `references/evidence-ja.md` | Evidence layer. Two-layer frame, three components of human-ness, metrics, three reversals |
-| `examples/` | Real before/after text with lint output. Reproduce it yourself |
+| [SKILL.md](ja-human-writing/SKILL.md) | Drafting/editing boundaries, register, material, speaker position, inspection workflow |
+| [forbidden-ja.md](ja-human-writing/references/forbidden-ja.md) | Contextual checks for wording, structure, and honorifics |
+| [evidence-ja.md](ja-human-writing/references/evidence-ja.md) | Sources, implementation observations, limits, withdrawn inferences |
+| [examples/](examples/) | Historical before/after example and rerun instructions |
 
 ## Credits
 
